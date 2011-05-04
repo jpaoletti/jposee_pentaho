@@ -1,0 +1,13 @@
+<pentaho name="pentaho-sample" class="org.jpos.ee.pentaho.PentahoQBean"  logger="Q2">
+    <property name="generator"           value="org.jpos.ee.pentaho.BasicReportGenerator" />
+    <property name="debug"               value="true" />
+    <property name="connection-driver"   value="com.mysql.jdbc.Driver" />
+    <property name="connection-url"      value="jdbc:mysql://@dbhost@/@dbname@" />
+    <property name="connection-user"     value="@dbuser@" />
+    <property name="connection-password" value="@dbpass@" />
+
+    <report name  = "samplereport1"
+            sql   = "reports/sql/sample.sql"
+            report= "reports/sample.prpt"
+    />
+</pentaho>
