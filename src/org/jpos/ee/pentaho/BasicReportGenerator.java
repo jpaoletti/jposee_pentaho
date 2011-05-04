@@ -26,6 +26,7 @@ import java.util.Map;
 import java.util.HashMap;
 import java.util.Map.Entry;
 import org.jpos.ee.pentaho.exception.*;
+import org.jpos.util.Logger;
 
 import org.pentaho.reporting.engine.classic.core.MasterReport;
 import org.pentaho.reporting.engine.classic.core.ReportProcessingException;
@@ -74,7 +75,7 @@ public class BasicReportGenerator extends AbstractReportGenerator {
         try {
             directly = resourceManager.createDirectly(reportDefinitionURL, MasterReport.class);
         } catch (Exception e) {
-            e.printStackTrace();
+            error(e);
             throw new ReportNotFoundException(e);
         }
         try {
@@ -99,9 +100,13 @@ public class BasicReportGenerator extends AbstractReportGenerator {
      * @throws IllegalArgumentException
      *
      * */
-    public File generateReport(String prpt, final OutputType outputType, Map<String, Object> parameters, String outputFilename) throws IllegalArgumentException, ReportProcessingException, PentahoReportException {
-        if (prpt != null) {
-            setReportPath(prpt);
+    @Override
+    public File generateReport(
+            final OutputType outputType,
+            final Map<String, Object> parameters,
+            final String outputFilename) throws IllegalArgumentException, ReportProcessingException, PentahoReportException {
+        if (getReportPath() == null) {
+            throw new ReportNotFoundException("No definition set");
         }
         setParameters(parameters);
         debug(String.format("Report output: %s", outputFilename));
@@ -125,8 +130,14 @@ public class BasicReportGenerator extends AbstractReportGenerator {
      * @throws IllegalArgumentException 
      * 
      * */
-    public OutputStream generateReport(String prpt, final OutputType outputType, Map<String, Object> parameters, OutputStream out) throws ReportProcessingException, ResourceException, PentahoReportException {
-        setReportPath(prpt);
+    @Override
+    public OutputStream generateReport(
+            final OutputType outputType,
+            final Map<String, Object> parameters,
+            final OutputStream out) throws ReportProcessingException, ResourceException, PentahoReportException {
+        if (getReportPath() == null) {
+            throw new ReportNotFoundException("No definition set");
+        }
         setParameters(parameters);
         switch (outputType) {
             case PDF:

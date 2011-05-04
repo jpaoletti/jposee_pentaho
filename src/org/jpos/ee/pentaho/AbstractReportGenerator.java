@@ -46,7 +46,7 @@ import org.pentaho.reporting.libraries.resourceloader.*;
 /**
  * @author jpaoletti
  */
-public abstract class AbstractReportGenerator {
+public abstract class AbstractReportGenerator implements ReportGenerator {
 
     private static final String PASSWORD = "password";
     private static final String USER = "user";
@@ -265,10 +265,12 @@ public abstract class AbstractReportGenerator {
         }
     }
 
+    @Override
     public String getReportPath() {
         return this.reportPath;
     }
 
+    @Override
     public void setReportPath(String reportPath) {
         this.reportPath = reportPath;
     }
@@ -293,29 +295,14 @@ public abstract class AbstractReportGenerator {
         return this.connectionUser;
     }
 
-    /**
-     * Setter
-     *
-     * @param connectionUser el connectionUser a setear
-     */
     public void setConnectionUser(String connectionUser) {
         this.connectionUser = connectionUser;
     }
 
-    /**
-     * Getter
-     *
-     * @return getter de connectionPassword
-     */
     public String getConnectionPassword() {
         return this.connectionPassword;
     }
 
-    /**
-     * Setter
-     *
-     * @param connectionPassword el connectionPassword a setear
-     */
     public void setConnectionPassword(String connectionPassword) {
         this.connectionPassword = connectionPassword;
     }
@@ -356,10 +343,13 @@ public abstract class AbstractReportGenerator {
 
     public void setDebug(boolean debug) {
         this.debug = debug;
-        debug("Debug activado");
     }
 
     public boolean isDebug() {
         return this.debug;
+    }
+
+    protected void error(Exception e) {
+        Logger.log(getLog().createError(e));
     }
 }
