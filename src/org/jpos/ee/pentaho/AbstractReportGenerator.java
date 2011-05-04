@@ -44,8 +44,7 @@ import org.pentaho.reporting.libraries.repository.stream.StreamRepository;
 import org.pentaho.reporting.libraries.resourceloader.*;
 
 /**
- * Clase base para la generaci�n de los reportes.
- * 
+ * @author jpaoletti
  */
 public abstract class AbstractReportGenerator {
 
