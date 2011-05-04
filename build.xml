@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="jPOS-EE-Pentaho" basedir="../..">
+    <property file="build.properties"/>
+    <property name="build.dir" value="build"/>
+    <property name="reports.dir" value="reports"/>
+    <property name="build.modules" value="${build.dir}/modules"/>
+    <property name="build.reports" value="${build.dir}/reports"/>
+
+    <target name="prepare">
+        <mkdir dir="${build.reports}"/>
+        <copy todir="${build.dir}" filtering="true">
+            <mapper type="regexp" from="^\w*[/|\\](.*)" to="\1" />
+            <fileset dir="modules" excludesfile="${modules.ignore.list}" >
+                <include name="*/reports/**"/>
+            </fileset>
+        </copy>
+    </target>
+</project>
