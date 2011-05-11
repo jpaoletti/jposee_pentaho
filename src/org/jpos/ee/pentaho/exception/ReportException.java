@@ -17,21 +17,21 @@
  */
 package org.jpos.ee.pentaho.exception;
 
-public class InvalidOutputException extends ReportException {
+public class ReportException extends Exception {
 
-    public InvalidOutputException() {
+    public ReportException() {
         super();
     }
 
-    public InvalidOutputException(String message, Throwable cause) {
+    public ReportException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public InvalidOutputException(String message) {
+    public ReportException(String message) {
         super(message);
     }
 
-    public InvalidOutputException(Throwable cause) {
+    public ReportException(Throwable cause) {
         super(cause);
     }
 }

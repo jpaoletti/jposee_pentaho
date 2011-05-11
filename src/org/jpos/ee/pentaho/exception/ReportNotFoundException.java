@@ -22,7 +22,7 @@ package org.jpos.ee.pentaho.exception;
  * el lugar indicado o tuvo un error al leerlo.
  * 
  * */
-public class ReportNotFoundException extends PentahoReportException {
+public class ReportNotFoundException extends ReportException {
 
     public ReportNotFoundException() {
         super();

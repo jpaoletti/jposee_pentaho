@@ -22,7 +22,7 @@ package org.jpos.ee.pentaho.exception;
  * no fue encontrado.
  * 
  * */
-public class QueryNotFoundException extends PentahoReportException {
+public class QueryNotFoundException extends ReportException {
 
     public QueryNotFoundException() {
         super();

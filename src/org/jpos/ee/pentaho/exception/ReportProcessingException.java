@@ -18,7 +18,7 @@
 package org.jpos.ee.pentaho.exception;
 
 
-public class ReportProcessingException extends PentahoReportException {
+public class ReportProcessingException extends ReportException {
 
     public ReportProcessingException() {
         super();
