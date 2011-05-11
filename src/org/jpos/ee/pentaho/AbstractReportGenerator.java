@@ -82,7 +82,7 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
      * 
      * @return the report definition used by thus report generator
      */
-    protected abstract MasterReport getReportDefinition() throws PentahoReportException;
+    protected abstract MasterReport getReportDefinition() throws ReportException;
 
     /**
      * Returns the data factory used by this report generator. If this
@@ -92,7 +92,7 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
      * @return the data factory used by this report generator
      * @throws PentahoReportException
      */
-    protected DataFactory getDataFactory() throws PentahoReportException {
+    protected DataFactory getDataFactory() throws ReportException {
         if (getConnectionDriver() == null) {
             debug("Using internal report definition file query and connection");
             return null;
@@ -136,46 +136,51 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
     }
 
     /**
-     * Generates the report in the specified <code>outputType</code>
-     * and writes it into the specified <code>outputFile</code>.
-     * 
-     * @param outputType
-     *            the output type of the report (HTML, PDF, HTML)
-     * @param outputFile
-     *            the file into which the report will be written
-     * @throws IllegalArgumentException
-     *             indicates the required parameters were not provided
+     * @param prpt Full path of file report
+     * @param outputFilename Full path output file
+     * @param outputType Output type {@link OutputType}
+     * @param parameters report parameters
+     *
+     * @return Report file
+     *
      * @throws IOException
-     *             indicates an error opening the file for writing
      * @throws ReportProcessingException
-     *             indicates an error generating the report
-     * @throws ResourceException 
-     * @throws ResourceCreationException 
-     * @throws ResourceLoadingException 
+     * @throws ResourceException
      * @throws PentahoReportException
-     */
-    protected void generateReport(final OutputType outputType, File outputFile) throws PentahoReportException {
-        if (outputFile == null) {
+     * @throws IllegalArgumentException
+     *
+     * */
+    @Override
+    public File generateReport(
+            final OutputType outputType,
+            final String outputFilename) throws IllegalArgumentException, ReportProcessingException, ReportException {
+        if (getReportPath() == null) {
+            throw new ReportNotFoundException("No definition set");
+        }
+        debug(String.format("Report output: %s", outputFilename));
+        if (outputFilename == null) {
             throw new IllegalArgumentException("The output file was not specified");
         }
+        final File file = new File(outputFilename);
 
         OutputStream outputStream = null;
         try {
             try {
-                outputStream = new BufferedOutputStream(new FileOutputStream(outputFile));
+                outputStream = new BufferedOutputStream(new FileOutputStream(file));
                 generateReport(outputType, outputStream);
             } finally {
                 if (outputStream != null) {
                     outputStream.close();
                 }
             }
-        } catch (PentahoReportException e) {
+        } catch (ReportException e) {
             throw e;
         } catch (ReportProcessingException e) {
             throw new org.jpos.ee.pentaho.exception.ReportProcessingException(e);
         } catch (Exception e) {
             throw new InvalidOutputException(e);
         }
+        return file;
     }
 
     /**
@@ -195,7 +200,8 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
      *             indicates an error generating the report
      * @throws ResourceException 
      */
-    protected void generateReport(final OutputType outputType, OutputStream outputStream) throws IllegalArgumentException, PentahoReportException, ReportProcessingException {
+    @Override
+    public OutputStream generateReport(final OutputType outputType, OutputStream outputStream) throws IllegalArgumentException, ReportException, ReportProcessingException {
 
         if (outputStream == null) {
             throw new IllegalArgumentException("The output stream was not specified");
@@ -258,6 +264,7 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
             }
             reportProcessor.processReport();
             debug("Report successfuly created");
+            return outputStream;
         } finally {
             if (reportProcessor != null) {
                 reportProcessor.close();
@@ -317,10 +324,12 @@ public abstract class AbstractReportGenerator implements ReportGenerator {
      *         generation process, or <code>null</code> if no
      *         parameters are required.
      */
+    @Override
     public Map<String, Object> getParameters() {
         return this.parameters;
     }
 
+    @Override
     public void setParameters(Map<String, Object> parameters) {
         this.parameters = parameters;
     }

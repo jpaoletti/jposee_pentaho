@@ -61,7 +61,7 @@ public class BasicReportGenerator extends AbstractReportGenerator {
      * @throws ResourceException 
      */
     @Override
-    public MasterReport getReportDefinition() throws PentahoReportException {
+    public MasterReport getReportDefinition() throws ReportException {
         debug(String.format("Report definition: %s", getReportPath()));
         URL reportDefinitionURL;
         try {
@@ -83,76 +83,6 @@ public class BasicReportGenerator extends AbstractReportGenerator {
         } catch (ResourceException e) {
             throw new ReportNotFoundException(e);
         }
-    }
-
-    /**
-     * @param prpt Full path of file report
-     * @param outputFilename Full path output file
-     * @param outputType Output type {@link OutputType}
-     * @param parameters report parameters
-     *
-     * @return Report file
-     *
-     * @throws IOException
-     * @throws ReportProcessingException
-     * @throws ResourceException
-     * @throws PentahoReportException
-     * @throws IllegalArgumentException
-     *
-     * */
-    @Override
-    public File generateReport(
-            final OutputType outputType,
-            final Map<String, Object> parameters,
-            final String outputFilename) throws IllegalArgumentException, ReportProcessingException, PentahoReportException {
-        if (getReportPath() == null) {
-            throw new ReportNotFoundException("No definition set");
-        }
-        setParameters(parameters);
-        debug(String.format("Report output: %s", outputFilename));
-        final File file = new File(outputFilename);
-        generateReport(outputType, file);
-        return file;
-    }
-
-    /**
-     * @param prpt Full path of file report
-     * @param outputFilename Full path output file
-     * @param outputType Output type {@link OutputType}
-     * @param parameters report parameters
-     * 
-     * @return Report file output stream
-     * 
-     * @throws IOException 
-     * @throws ReportProcessingException 
-     * @throws ResourceException 
-     * @throws PentahoReportException
-     * @throws IllegalArgumentException 
-     * 
-     * */
-    @Override
-    public OutputStream generateReport(
-            final OutputType outputType,
-            final Map<String, Object> parameters,
-            final OutputStream out) throws ReportProcessingException, ResourceException, PentahoReportException {
-        if (getReportPath() == null) {
-            throw new ReportNotFoundException("No definition set");
-        }
-        setParameters(parameters);
-        switch (outputType) {
-            case PDF:
-                PdfReportUtil.createPDF(getReportDefinition(), out);
-                break;
-            case HTML:
-                HtmlReportUtil.createStreamHTML(getReportDefinition(), out);
-                break;
-            case EXCEL:
-                ExcelReportUtil.createXLS(getReportDefinition(), out);
-                break;
-            default:
-                break;
-        }
-        return out;
     }
 
     @Override
